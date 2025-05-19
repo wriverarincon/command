@@ -11,6 +11,8 @@ func NewRegistry() *Registry {
 	}
 }
 
+func New()
+
 // Register adds a command to the registry with optional subcommands.
 func (r *Registry) Register(path []string, cmd Command) error {
 	if cmd.Metadata().Name == "" {
