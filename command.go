@@ -27,7 +27,7 @@ func (r *Registry) New(path []string, cmd Command, setup func()) error {
 
 	// If the path slice has no values (or the "HasNodes" field is set to false)
 	// we will assume this is the parent command and set it as so
-	if len(path) == 0 || !cmd.Metadata().HasNodes {
+	if len(path) == 0 {
 		if _, exists := r.findCommand([]string{cmd.Metadata().Name}); exists {
 			return fmt.Errorf("command %q already exists", cmd.Metadata().Name)
 		}
