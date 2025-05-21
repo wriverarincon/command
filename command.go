@@ -83,19 +83,19 @@ func (r *Registry) findCommand(path []string) (*CommandNode, bool) {
 }
 
 // Execute triggers the command's handler.
-func (r *Registry) Execute(path, args []string) error {
-	if len(path) == 0 {
+func (r *Registry) Execute(args []string) error {
+	if len(args) == 0 {
 		return errors.New("command path cannot not be empty")
 	}
 
 	current := r.commands
-	for i, part := range path {
+	for i, part := range args {
 		node, exists := current[part]
 		if !exists {
 			return fmt.Errorf("command %q not found", part)
 		}
-		if i == len(path)-1 {
-			return node.Command.Execute(args)
+		if i == len(args)-1 {
+			return node.Command.Execute(args[i:])
 		}
 		current = node.Subcommands
 	}
