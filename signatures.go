@@ -13,7 +13,7 @@ type MetaData struct {
 	ShortDescription string
 	LongDescription  string
 	HasNodes         bool
-	Flags            Flag
+	Flags            []Flag
 }
 
 // Flag represents a command-line flag with its properties.
