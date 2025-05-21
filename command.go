@@ -49,13 +49,10 @@ func (r *Registry) New(path []string, cmd Command, setup func()) error {
 	}
 	for i, part := range path {
 		if i == len(path)-1 {
-			if _, exists := r.findCommand([]string{part}); !exists {
-				return fmt.Errorf("parent command %q not found", part)
-			}
-			if _, exists := current[part].Subcommands[cmd.Metadata().Name]; exists {
+			if _, exists := current[cmd.Metadata().Name]; exists {
 				return fmt.Errorf("subcommand %q already exists under %q", cmd.Metadata().Name, part)
 			}
-			current[part].Subcommands[cmd.Metadata().Name] = node
+			current[cmd.Metadata().Name] = node
 			return nil
 		}
 		if _, exists := current[part]; !exists {
