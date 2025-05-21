@@ -12,7 +12,6 @@ type MetaData struct {
 	Name             string
 	ShortDescription string
 	LongDescription  string
-	HasNodes         bool
 	Flags            []Flag
 }
 

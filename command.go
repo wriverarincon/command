@@ -27,7 +27,7 @@ func (r *Registry) New(path []string, cmd Command, setup func()) error {
 
 	// If the path slice has no values (or the "HasNodes" field is set to false)
 	// we will assume this is the parent command and set it as so
-	if len(path) == 0 || !cmd.Metadata().HasNodes {
+	if len(path) == 0 {
 		if _, exists := r.findCommand([]string{cmd.Metadata().Name}); exists {
 			return fmt.Errorf("command %q already exists", cmd.Metadata().Name)
 		}
@@ -49,13 +49,10 @@ func (r *Registry) New(path []string, cmd Command, setup func()) error {
 	}
 	for i, part := range path {
 		if i == len(path)-1 {
-			if _, exists := r.findCommand([]string{part}); !exists {
-				return fmt.Errorf("parent command %q not found", part)
-			}
-			if _, exists := current[part].Subcommands[cmd.Metadata().Name]; exists {
+			if _, exists := current[cmd.Metadata().Name]; exists {
 				return fmt.Errorf("subcommand %q already exists under %q", cmd.Metadata().Name, part)
 			}
-			current[part].Subcommands[cmd.Metadata().Name] = node
+			current[cmd.Metadata().Name] = node
 			return nil
 		}
 		if _, exists := current[part]; !exists {
@@ -83,19 +80,19 @@ func (r *Registry) findCommand(path []string) (*CommandNode, bool) {
 }
 
 // Execute triggers the command's handler.
-func (r *Registry) Execute(path, args []string) error {
-	if len(path) == 0 {
+func (r *Registry) Execute(args []string) error {
+	if len(args) == 0 {
 		return errors.New("command path cannot not be empty")
 	}
 
 	current := r.commands
-	for i, part := range path {
+	for i, part := range args {
 		node, exists := current[part]
 		if !exists {
 			return fmt.Errorf("command %q not found", part)
 		}
-		if i == len(path)-1 {
-			return node.Command.Execute(args)
+		if i == len(args)-1 {
+			return node.Command.Execute(args[i:])
 		}
 		current = node.Subcommands
 	}
